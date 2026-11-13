@@ -6,6 +6,8 @@ Mosaic puts web panes and AI chats in one workspace. This preview supports **Eng
 
 Run `Mosaic-0.7.5-win-x64-setup.exe`, or extract the entire `Mosaic-0.7.5-win-x64-portable.zip` and run `Mosaic.exe`. Save your work and close Mosaic before upgrading. Both formats keep user data in `%APPDATA%\MosaicBrowser`; uninstalling the app preserves it. Current builds are unsigned previews and may trigger Windows download or execution warnings. Managed computers may block them.
 
+For the standard **Windows protected your PC** SmartScreen warning, first check the official download and SHA-256. If you choose to run it, select **More info → Run anyway**. If that option is unavailable, or protection reports a malware detection, ask your administrator or contact support; do not disable Windows protection. [Microsoft's distribution guidance](https://learn.microsoft.com/windows/apps/package-and-deploy/publish-first-app)
+
 1. Add a pane and sign in directly on the website. Different panes can keep separate accounts.
 2. Install the official Claude Code or Codex CLI and sign in with your own account. Provider pricing and limits apply.
 3. Create an AI chat, choose its provider, model and allowed panes, then send a request. Stop it or take over at any time. Handle sign-ins, verification codes and payments yourself.

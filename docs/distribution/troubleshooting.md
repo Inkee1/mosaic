@@ -2,7 +2,9 @@
 
 ## Windows에서 실행을 막는 경우
 
-현재 미서명 미리보기는 SmartScreen, Smart App Control 또는 조직 정책에 의해 실행이 차단될 수 있습니다. 파일 이름 변경이나 해시 일치만으로 신뢰할 수 있는 배포자가 되는 것은 아닙니다. Windows 보호 기능은 유지하고, 배포자 서명을 갖춘 빌드를 요청하거나 조직의 IT 관리자에게 확인하세요. Mosaic 도구는 Defender, Smart App Control, 실행 정책 또는 시스템 레지스트리의 보호 설정을 변경하지 않습니다.
+현재 베타는 미서명입니다. 공식 [Inkee1/mosaic Releases](https://github.com/Inkee1/mosaic/releases)에서 받은 파일인지와 SHA-256을 확인하세요. 일반 SmartScreen의 **Windows의 PC 보호** 경고에서 실행을 선택하려면 **추가 정보 → 실행**을 누를 수 있습니다. 영어 Windows에서는 **More info → Run anyway**입니다. [Microsoft 배포 안내](https://learn.microsoft.com/windows/apps/package-and-deploy/publish-first-app)
+
+실행 버튼이 없거나 Smart App Control·조직 정책이 차단하는 경우에는 IT 관리자에게 확인하세요. Defender가 악성코드를 탐지한 경우에도 위 일반 평판 경고로 간주하지 마세요. 앱 사용을 위해 보호 기능 전체를 끌 필요는 없습니다. Mosaic 도구는 Defender, Smart App Control, 실행 정책 또는 시스템 레지스트리의 보호 설정을 변경하지 않습니다.
 
 설치 파일의 속성에서 디지털 서명을 확인하거나 다음 명령으로 상태를 읽을 수 있습니다.
 

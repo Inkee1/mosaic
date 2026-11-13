@@ -1,70 +1,79 @@
 # Mosaic
 
-[English quick start](docs/distribution/quickstart.en.md) · 한국어 / English 인터페이스 지원
+**Your web pages and AI, side by side.**
 
-**여러 웹페이지와 AI를 한 화면에서. 화면마다 다른 계정으로, 필요한 작업을 나란히.**
+[Download for Windows](https://github.com/Inkee1/mosaic/releases/tag/v0.7.5) · [한국어](docs/distribution/README.ko.md) · [Getting started](docs/distribution/quickstart.en.md) · [Report an issue](https://github.com/Inkee1/mosaic/issues)
 
-Mosaic는 여러 웹 화면과 AI 채팅을 한 작업 공간에서 사용하는 Windows 데스크톱 브라우저입니다. 자료 조사, 콘텐츠 비교, 여러 계정의 작업을 나란히 보고, 선택한 화면에서 Claude Code 또는 Codex와 함께 작업할 수 있습니다.
+Mosaic is a Windows desktop browser that brings multiple web pages and AI conversations into one workspace. Compare content, research across sites, and keep separate accounts in each pane. Choose which pages Claude Code or Codex can work with.
 
-**Your web pages and AI, side by side.** Keep separate accounts in each pane and work with Claude Code or Codex on the pages you choose.
+![Mosaic with YouTube, Instagram, TikTok and X arranged in four panes beside the AI chat panel](docs/distribution/assets/mosaic-workspace.png)
 
-**0.7.5 미서명 베타.** 공식 소스와 배포 파일은 [Inkee1/mosaic](https://github.com/Inkee1/mosaic)의 [Releases](https://github.com/Inkee1/mosaic/releases)에서 확인하세요. Windows가 알 수 없는 게시자 경고를 표시할 수 있습니다. 문의: tensordev9@gmail.com
+*Four websites and an AI chat panel in one workspace. The app supports English and Korean. Login IDs have been removed from this screenshot.*
 
-## 할 수 있는 일
+## What you can do
 
-- 여러 웹 화면을 격자로 배치하고, 작업 세트별로 주소와 배치를 보관합니다.
-- 화면마다 별도 로그인 상태를 유지하고, 프로필별로 계정을 관리합니다.
-- 선택한 화면에서 AI 채팅을 실행·중지·이어갑니다. 내장 브라우저와 별도 Chrome 연결을 지원합니다.
-- 첫 실행 안내와 설정 화면에서 AI 연결 상태, 수동 업데이트, 진단 요약을 확인합니다.
-- 시스템 언어에 따라 한국어·영어로 시작하며, **Mosaic 설정 → 언어**에서 변경할 수 있습니다. 직접 작성한 이름·내용과 웹사이트 언어는 바꾸지 않습니다.
+- **See pages side by side.** Arrange web panes in a grid and save their addresses and layout as workspaces.
+- **Keep accounts separate.** Use different browser profiles and sign-in sessions for different panes.
+- **Work with AI on selected pages.** Choose the panes a Claude Code or Codex chat can access. Stop the AI or take over when needed.
+- **Use the built-in browser or connect Chrome.** Switch to a separate Chrome connection for sites that need it.
+- **Choose English or Korean.** Change the interface under **Mosaic settings → Language**. Your writing and website content stay in their original language.
 
-AI 응답이 끝났다는 표시는 사이트의 실제 작업 성공을 보증하지 않습니다. 로그인·인증과 중요한 변경 결과는 사이트에서 직접 확인하세요. 일부 사이트는 내장 브라우저를 지원하지 않을 수 있습니다.
+AI features require your own supported CLI installation and provider account; provider pricing and limits apply. Website compatibility varies, and a finished AI response does not confirm that a website task succeeded.
 
-## 설치와 첫 사용
+## Install
 
-설치판은 `Mosaic-0.7.5-win-x64-setup.exe`, 압축판은 `Mosaic-0.7.5-win-x64-portable.zip`입니다. 압축판은 전체를 풀고 `Mosaic.exe`를 실행합니다. 두 방식 모두 사용자 데이터는 `%APPDATA%\MosaicBrowser`에 보관하며 앱 제거 시에도 유지합니다.
+**Mosaic 0.7.5 is an unsigned Windows x64 beta.** Windows may show an unknown-publisher or SmartScreen warning. Download from the official release and compare the included SHA-256 checksums before running. See the [installation guide](docs/distribution/quickstart.en.md#install-and-start) for details.
 
-AI 기능에는 공식 Claude Code 또는 Codex CLI 설치와 본인 계정 로그인이 필요합니다. 제공자의 요금·한도는 별도로 적용됩니다. 자세한 절차는 [시작하기](docs/distribution/setup.md)를 확인하세요.
+- [Installer — Mosaic-0.7.5-win-x64-setup.exe](https://github.com/Inkee1/mosaic/releases/download/v0.7.5/Mosaic-0.7.5-win-x64-setup.exe)
+- [ZIP — Mosaic-0.7.5-win-x64-portable.zip](https://github.com/Inkee1/mosaic/releases/download/v0.7.5/Mosaic-0.7.5-win-x64-portable.zip): extract the entire archive and run `Mosaic.exe`.
 
-기기 내부 사용 횟수 기록과 서버 사용자 수 집계는 각각 기본적으로 꺼져 있습니다. 서버 집계는 별도 동의 후 무작위 설치 ID·앱 버전·OS와 하루 한 번 실행 여부만 보내며 과거 로컬 기록을 전송하지 않습니다. 집계 서버가 연결되지 않은 빌드는 전송하지 않습니다. AI 작업의 페이지 내용과 스크린샷은 선택한 AI 제공자에게 전달될 수 있습니다. [개인정보와 저장](docs/distribution/privacy.md), [집계 연결](docs/distribution/analytics.md)을 확인하세요.
+Save your work and close Mosaic before updating. Both formats keep user data in `%APPDATA%\MosaicBrowser`; uninstalling preserves it.
 
-## 문서
+## Get started
 
-- [시작하기와 업데이트](docs/distribution/setup.md)
-- [개인정보와 저장](docs/distribution/privacy.md)
-- [문제 해결](docs/distribution/troubleshooting.md)
-- [기여와 개발](docs/distribution/contributing.md)
-- [배포 절차와 공개 전 확인](docs/distribution/release.md)
-- [0.7.5 검증 범위와 남은 항목](docs/distribution/validation.md)
-- [라이선스 결정 사항](docs/distribution/license-policy.md)
-- [타사 소프트웨어 고지](docs/distribution/third-party-notices.md)
+1. Add a pane and open a website. Sign in directly on the site if needed.
+2. Install and sign in to the official Claude Code or Codex CLI with your own account.
+3. Create an AI chat, choose its provider and allowed panes, and describe your task.
 
-## 개발과 검증
+See the [English guide](docs/distribution/quickstart.en.md) or [한국어 시작하기](docs/distribution/setup.md) for setup, privacy, permissions and troubleshooting.
 
-Node.js 22.12 이상과 npm을 사용합니다. 데스크톱 배포·통합 검증은 Windows x64에서 실행합니다.
+## Privacy and usage counting
+
+Local activity counts and online usage counting are both **off by default**. Online counting requires separate consent and measures active installations, not verified individual people. It sends a random installation ID, app/platform information and one activity event per UTC day; browsing history, page contents, chats, accounts and passwords are not included.
+
+During an AI task, selected page content and screenshots may be sent to your chosen AI provider. Read [Data and privacy](docs/distribution/quickstart.en.md#data-and-privacy) for storage, retention and opt-out details.
+
+## Feedback and support
+
+Found a bug or have an idea? [Open a GitHub issue](https://github.com/Inkee1/mosaic/issues). Include the Mosaic version and steps to reproduce it. For private or security-related reports, email **tensordev9@gmail.com**; see [SECURITY.md](SECURITY.md).
+
+## Develop and verify
+
+Use Node.js 24 and npm on Windows x64 for desktop builds and integration tests.
 
 ```powershell
 npm ci
 npx playwright install chrome
-npm run dev             # 웹 UI 미리보기
-npm run desktop         # 데스크톱 앱 빌드 후 실행
+npm run dev             # Preview the web UI
+npm run desktop         # Build and launch the desktop app
 npm run test:core
 npm run test:e2e
 npm run test:desktop
 ```
 
-웹 UI 미리보기에서는 실제 사이트 로그인과 데스크톱 AI 기능을 사용할 수 없습니다. 테스트는 격리된 임시 사용자 데이터와 로컬 사이트를 사용합니다.
+The web preview does not provide native browser sessions or desktop AI features. Automated tests use isolated profiles, local test sites and test AI providers.
 
 ```powershell
-npm run dist:win         # 실행 폴더·설치형·압축형·SHA-256
+npm run dist:win        # App folder, installer, ZIP and SHA-256 checksums
 npm run audit:publication
-npm run export:source   # 허용 목록에 있는 파일만 소스 ZIP에 포함
-npm run check:release   # 로컬 미리보기 점검
+npm run export:source
 npm run check:release:public
 ```
 
-`check:release:public`은 배포 정보·라이선스·집계 연결·파일 무결성과 서명 정책을 검사합니다. 미서명은 명시적으로 선택한 베타에서만 허용하며 정식 채널은 서명이 필요합니다. 배포 정보는 `release.config.json`에서 관리합니다.
+The public release check validates release configuration, licensing, analytics configuration, file integrity and signing policy. Unsigned builds are allowed only under the explicit beta policy; the stable channel requires verified signing. The [0.7.5 release workflow](https://github.com/Inkee1/mosaic/actions/runs/43428245275) passed 212 core, 69 UI and 15 packaged-app tests, plus installation, reinstallation and uninstall checks.
 
-## 라이선스
+Further documentation (Korean): [Contributing](docs/distribution/contributing.md) · [Troubleshooting](docs/distribution/troubleshooting.md) · [Release process](docs/distribution/release.md) · [Validation](docs/distribution/validation.md) · [Third-party notices](docs/distribution/third-party-notices.md).
 
-Mosaic 자체 코드는 [PolyForm Noncommercial 1.0.0](LICENSE.md)을 적용합니다. 비상업 목적의 사용·수정·재배포를 허용하며 상업적 이용과 그 목적의 수정에는 별도 허락이 필요합니다. 일반적인 영리 업무 사용도 자유롭게 허용하는 조건은 아닙니다. OSI 오픈 소스 대신 비상업 조건의 소스 공개로 안내합니다. 공익기관 등 원문의 허용 범위는 [라이선스 안내](docs/distribution/license-policy.md)를 확인하세요. 타사 구성요소에는 각각의 원래 라이선스가 적용됩니다.
+## License
+
+Mosaic's own code is available under [PolyForm Noncommercial 1.0.0](LICENSE.md). Use, modification and redistribution are permitted for noncommercial purposes under its terms. Commercial use, including modification for commercial purposes, requires separate permission. This is source-available software under a noncommercial license, not an OSI open-source license. Third-party components retain their own licenses.

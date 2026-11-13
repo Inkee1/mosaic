@@ -11,6 +11,7 @@ import { auditPublication, stampBuild } from '../../scripts/audit-publication.mj
 import { exportSource, readSourceArchive } from '../../scripts/export-source.mjs';
 import { evaluateRelease, evaluateSigningPolicy, windowsJson } from '../../scripts/check-release.mjs';
 import { copyReleaseAsset } from '../../scripts/release-evidence.mjs';
+import { powershellJson } from '../../scripts/windows-signatures.mjs';
 
 const pending = { repository: null, supportEmail: null, publisher: null, channel: 'beta', licenseStatus: 'pending', licenseFile: null };
 const hash = (data) => createHash('sha256').update(data).digest('hex');
@@ -401,4 +402,17 @@ test('build provenance records output hashes and refuses a missing build', async
 test('Windows signature JSON preserves Korean publisher names', { skip: process.platform !== 'win32' }, async () => {
   const value = await windowsJson("[pscustomobject]@{name=([string][char]0xBAA8+[char]0xC790+[char]0xC774+[char]0xD06C)}|ConvertTo-Json -Compress");
   assert.equal(value.name, '모자이크');
+});
+
+test('Windows inspection uses compatible modules instead of an inherited PowerShell module path', { skip: process.platform !== 'win32' }, async t => {
+  const root = await fixture(t), modules = join(root, 'modules');
+  await put(modules, 'Microsoft.PowerShell.Security/Microsoft.PowerShell.Security.psd1', "@{ ModuleVersion='7.0.0'; PowerShellVersion='5.1'; RootModule='incompatible.psm1'; FunctionsToExport=@('Get-AuthenticodeSignature') }\n");
+  await put(modules, 'Microsoft.PowerShell.Security/incompatible.psm1', "throw 'Incompatible inherited module selected'\n");
+  const moduleKey = Object.keys(process.env).find(key => key.toLowerCase() === 'psmodulepath') || 'PSModulePath';
+  const parentPath = process.env[moduleKey];
+  const inherited = { [moduleKey]: modules + ';' + (parentPath || ''),
+    MOSAIC_TEST_SIGNATURE_FILE: fileURLToPath(new URL('../../node_modules/electron-winstaller/vendor/7z.exe', import.meta.url)) };
+  const command = "[pscustomobject]@{status=(Get-AuthenticodeSignature -LiteralPath $env:MOSAIC_TEST_SIGNATURE_FILE).Status.ToString()}|ConvertTo-Json -Compress";
+  for (const helper of [windowsJson, powershellJson]) assert.equal((await helper(command, inherited)).status, 'NotSigned');
+  assert.equal(process.env[moduleKey], parentPath);
 });

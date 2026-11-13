@@ -47,7 +47,27 @@ jobs:
       - name: Typecheck and build UI
         run: npm run build
       - name: Core behavior tests
+        id: core
         run: node scripts/run-release-tests.mjs core
+      - name: Diagnose Windows inspection when core checks fail
+        if: failure() && steps.core.outcome == 'failure'
+        run: |
+          @'
+          import {mkdtemp,copyFile,realpath} from 'node:fs/promises';
+          import {tmpdir} from 'node:os';
+          import {join} from 'node:path';
+          import {windowsJson} from './scripts/check-release.mjs';
+          import {powershellJson} from './scripts/windows-signatures.mjs';
+          const root=await mkdtemp(join(tmpdir(),'mosaic-ci-inspection-'));
+          const file=join(root,'Mosaic.exe');
+          await copyFile('node_modules/electron-winstaller/vendor/7z.exe',file);
+          console.log(JSON.stringify({node:process.version,temp:tmpdir(),realTemp:await realpath(tmpdir()),modulePath:process.env.PSModulePath}));
+          for(const helper of [windowsJson,powershellJson]){
+            try{
+              console.log(JSON.stringify(await helper("$items=ConvertFrom-Json $env:MOSAIC_INSPECTION_FILES;$out=@(foreach($i in $items){$s=Get-AuthenticodeSignature -LiteralPath $i.absolute;[pscustomobject]@{file=$i.file;status=$s.Status.ToString()}});ConvertTo-Json -InputObject $out -Compress",{MOSAIC_INSPECTION_FILES:JSON.stringify([{file:'Mosaic.exe',absolute:file}])})));
+            }catch(error){console.error(helper.name+': '+(error.stderr||error.message));}
+          }
+          '@ | node --input-type=module
       - name: Chrome UI and automation tests
         run: node scripts/run-release-tests.mjs ui
       - name: Audit publishable source

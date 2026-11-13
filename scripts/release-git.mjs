@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createHash } from 'node:crypto';
-import { resolve } from 'node:path';
+import { realpath } from 'node:fs/promises';
 
 const execute = promisify(execFile);
 const sha = value => /^[a-f0-9]{40}$/.test(value || '');
@@ -10,8 +10,8 @@ const repositoryName = value => /^[a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9._-]*$/i.te
 export async function verifySourceCommit(root, { commit, repository, files }) {
   if (!sha(commit) || !repositoryName(repository)) throw new Error('A source commit and repository are required.');
   const git = async args => (await execute('git', args, { cwd: root, windowsHide: true, maxBuffer: 16 * 1024 * 1024 })).stdout;
-  const canonical = value => process.platform === 'win32' ? resolve(value).toLowerCase() : resolve(value);
-  if (canonical((await git(['rev-parse', '--show-toplevel'])).trim()) !== canonical(root)) throw new Error('Release source must be the repository root.');
+  const canonical = async value => { const path = await realpath(value); return process.platform === 'win32' ? path.toLowerCase() : path; };
+  if (await canonical((await git(['rev-parse', '--show-toplevel'])).trim()) !== await canonical(root)) throw new Error('Release source must be the repository root.');
   const remote = (await git(['remote', 'get-url', 'origin'])).trim();
   const match = /^(?:https:\/\/github\.com\/|git@github\.com:)([a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9._-]*?)(?:\.git)?$/i.exec(remote);
   if (!match || match[1].toLowerCase() !== repository.toLowerCase()) throw new Error('Source repository does not match the release destination.');

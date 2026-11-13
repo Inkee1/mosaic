@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { mkdtemp, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { verifySourceCommit, verifyRemoteTag } from '../../scripts/release-git.mjs';
+import { windowsJson } from '../../scripts/check-release.mjs';
 
 test('release source must match the selected repository and exact committed tree, including CRLF bytes', async t => {
   const root = await mkdtemp(join(tmpdir(), 'mosaic-release-git-'));
@@ -20,6 +21,13 @@ test('release source must match the selected repository and exact committed tree
   await git(['-c', 'user.name=Test', '-c', 'user.email=user@example.test', 'commit', '-m', 'fixture']);
   const commit = await git(['rev-parse', 'HEAD']);
   assert.equal(await verifySourceCommit(root, { commit, repository: 'example/mosaic', files }), commit);
+  if (process.platform === 'win32') {
+    const alias = await windowsJson("$fs=New-Object -ComObject Scripting.FileSystemObject;[pscustomobject]@{path=$fs.GetFolder($env:MOSAIC_TEST_ROOT).ShortPath}|ConvertTo-Json -Compress", { MOSAIC_TEST_ROOT: root });
+    assert.equal(await verifySourceCommit(alias.path, { commit, repository: 'example/mosaic', files }), commit);
+  }
+  const subdirectory = join(root, 'nested');
+  await mkdir(subdirectory);
+  await assert.rejects(verifySourceCommit(subdirectory, { commit, repository: 'example/mosaic', files }), /repository root/i);
   await assert.rejects(verifySourceCommit(root, { commit, repository: 'other/mosaic', files }), /repository/i);
   await assert.rejects(verifySourceCommit(root, { commit, repository: 'example/mosaic', files: files.slice(1) }), /file|tree/i);
   await assert.rejects(verifySourceCommit(root, { commit, repository: 'example/mosaic', files: [...files, { path: 'new.md', data: Buffer.from('uncommitted') }] }), /file|tree/i);

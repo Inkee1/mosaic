@@ -10,7 +10,10 @@ import { normalizeSupportUrl } from '../desktop/support-contact.mjs';
 
 const execute = promisify(execFile);
 export async function windowsJson(command, extraEnv = {}) {
-  const { stdout } = await execute('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', "$ErrorActionPreference='Stop';[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;" + command], { windowsHide: true, timeout: 30000, maxBuffer: 1024 * 1024, env: { ...process.env, ...extraEnv } });
+  const env = { ...process.env, ...extraEnv };
+  // Let Windows PowerShell rebuild its module path instead of inheriting PowerShell 7 modules through Node.
+  for (const key of Object.keys(env)) if (key.toLowerCase() === 'psmodulepath') delete env[key];
+  const { stdout } = await execute('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', "$ErrorActionPreference='Stop';[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;" + command], { windowsHide: true, timeout: 30000, maxBuffer: 1024 * 1024, env });
   return JSON.parse(stdout.replace(/^\uFEFF/, ''));
 }
 const VERSION = /^\d+\.\d+\.\d+(?:-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*)?$/;

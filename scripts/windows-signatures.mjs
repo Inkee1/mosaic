@@ -28,9 +28,12 @@ export async function collectSigningTargets(root, version) {
 
 export async function powershellJson(command, extraEnv = {}) {
   if (process.platform !== 'win32') throw new Error('Windows is required for Authenticode and installer checks');
+  const env = { ...process.env, ...extraEnv };
+  // Let Windows PowerShell rebuild its module path instead of inheriting PowerShell 7 modules through Node.
+  for (const key of Object.keys(env)) if (key.toLowerCase() === 'psmodulepath') delete env[key];
   const { stdout } = await execute('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
     "$ErrorActionPreference='Stop';[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;" + command], {
-    windowsHide: true, env: { ...process.env, ...extraEnv }, timeout: 60000, maxBuffer: 8 * 1024 * 1024,
+    windowsHide: true, env, timeout: 60000, maxBuffer: 8 * 1024 * 1024,
   });
   return JSON.parse(stdout.replace(/^\uFEFF/, ''));
 }

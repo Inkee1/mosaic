@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Mosaic Windows 미리보기 배포 페이지 초안. 공개 다운로드는 아직 준비 중입니다.">
+  <title>Mosaic — 여러 화면, 하나의 작업 공간</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#20342c;background:#f4f6f2;color-scheme:light;line-height:1.6}
+    *{box-sizing:border-box}body{margin:0;word-break:keep-all;overflow-wrap:anywhere}main{max-width:1050px;margin:auto;padding:48px 24px 64px}header{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:68px}.wordmark{font-size:22px;font-weight:750;letter-spacing:-.7px}.badge{font-size:13px;border:1px solid #b7c7bc;border-radius:999px;padding:4px 12px}h1{font-size:clamp(34px,6vw,60px);line-height:1.18;letter-spacing:-2px;max-width:720px;margin:0 0 24px}h2{font-size:21px;margin:0 0 12px}p{max-width:760px}.lead{font-size:19px;color:#53665a}.notice{background:#fff2d9;border:1px solid #e4c58e;padding:18px 20px;border-radius:12px;margin:32px 0;color:#654715}.downloads{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 10px}button{font:inherit;border-radius:9px;border:1px solid #96aa9d;padding:12px 20px;background:#dce4dc;color:#536459;cursor:not-allowed}button:disabled{opacity:1}.small{font-size:14px;color:#54665c}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:48px 0}.card{background:#fff;border:1px solid #d8e1d8;border-radius:14px;padding:24px}.card p{margin-bottom:0}a{color:#245c43;text-underline-offset:3px}footer{margin-top:44px;padding-top:24px;border-top:1px solid #cdd9cf;font-size:14px}code{font-size:.95em}ul{padding-left:21px}@media(max-width:720px){header{margin-bottom:40px}.grid{grid-template-columns:1fr;margin:32px 0}main{padding-top:24px}h1{letter-spacing:-1px}}
+  </style>
+</head>
+<body>
+<main>
+  <header><div class="wordmark">Mosaic</div><span class="badge">Windows x64 · 0.7.4 미리보기</span></header>
+  <h1>여러 화면을 모으고,<br>작업의 흐름을 이어가세요.</h1>
+  <p class="lead">웹 화면과 세트, 화면별 계정, Claude Code·Codex 채팅을 한 작업 공간에서 다룹니다. AI가 사용할 화면은 직접 선택할 수 있습니다.</p>
+  <div class="notice" role="note"><strong>공개 배포 준비 중</strong><br>공개 저장소와 집계 연결, Windows 배포 방식을 확정하고 최종 검사를 마친 뒤 다운로드를 제공합니다.</div>
+  <div class="downloads" aria-describedby="download-status">
+    <button type="button" disabled>Windows 설치판 · 준비 중</button>
+    <button type="button" disabled>압축판 · 준비 중</button>
+    <button type="button" disabled>검토용 소스 · 준비 중</button>
+  </div>
+  <p id="download-status" class="small">다운로드와 체크섬 링크는 아직 등록되지 않았습니다. Mosaic 자체 코드는 PolyForm Noncommercial 1.0.0 조건이며 상업 목적의 사용·수정에는 별도 허락이 필요합니다.</p>
+  <div class="grid">
+    <section class="card"><h2>작업 공간을 유지</h2><p>화면과 세트를 저장하고 다시 엽니다. 사이트의 작성 중 문서는 해당 사이트에서 저장하세요.</p></section>
+    <section class="card"><h2>선택한 화면에서 AI</h2><p>공식 Claude Code 또는 Codex CLI 설치와 로그인이 필요합니다. 모델 이용 조건은 제공자 계정에 따릅니다.</p></section>
+    <section class="card"><h2>기록은 직접 선택</h2><p>기기 내부 기록과 서버 집계는 각각 기본적으로 꺼져 있습니다. 서버 집계는 별도 동의 후 하루 한 번 활성 설치 여부만 전송합니다.</p></section>
+  </div>
+  <section>
+    <h2>설치 전에 확인하세요</h2>
+    <ul>
+      <li>설치판은 현재 Windows 사용자에게 설치합니다. 압축판은 전체 폴더를 풀어 실행합니다.</li>
+      <li>업데이트는 설정에서 직접 확인하고 설치합니다. 자동으로 다운로드하거나 실행하지 않습니다.</li>
+      <li>AI 요청과 허용한 페이지 내용은 선택한 AI 제공자에게 전달될 수 있습니다.</li>
+      <li>미서명 파일은 Windows 정책에 따라 차단될 수 있습니다. 보호 설정을 유지하고 서명된 배포본을 확인하세요.</li>
+    </ul>
+  </section>
+  <footer>
+    <p><a href="../docs/distribution/setup.md">시작하기</a> · <a href="../docs/distribution/privacy.md">개인정보와 저장</a> · <a href="../docs/distribution/troubleshooting.md">문제 해결</a> · <a href="../docs/distribution/license-policy.md">라이선스 상태</a></p>
+    <p>문의: <a href="mailto:tensordev9@gmail.com">tensordev9@gmail.com</a>. 공개 저장소와 배포 방식은 준비 중입니다.</p>
+  </footer>
+</main>
+<!-- Publication checklist: confirm publisher/license/support; replace disabled controls with reviewed HTTPS URLs; add exact checksums/signature status; publish referenced documentation; remove noindex only after approval. -->
+</body>
+</html>

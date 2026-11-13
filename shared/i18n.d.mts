@@ -1,0 +1,11 @@
+export type Locale = 'ko' | 'en';
+export type LanguagePreference = 'system' | Locale;
+export type MessageValues = Record<string, string | number>;
+export const messages: { readonly en: Readonly<Record<string, string>> };
+export function normalizeLanguagePreference(value: unknown): LanguagePreference;
+export function resolveLocale(preference: unknown, systemLocale?: string): Locale;
+export function translate(locale: Locale, message: string, values?: MessageValues): string;
+export function t(message: string, values?: MessageValues): string;
+export function setLocale(locale: Locale): void;
+export function getLocale(): Locale;
+export function subscribeLocale(listener: () => void): () => void;

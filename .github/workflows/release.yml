@@ -1,0 +1,46 @@
+name: Prepare or publish Windows release
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish this tested commit as a GitHub Release (requires all public gates)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    uses: ./.github/workflows/ci.yml
+    with:
+      require-public: ${{ inputs.publish }}
+  publish:
+    if: inputs.publish
+    needs: validate
+    runs-on: windows-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@v8
+        with:
+          name: mosaic-windows-release
+          path: release-bundle
+      - name: Verify repository, tested commit and every upload hash
+        run: node scripts/publish-release.mjs --check release-bundle
+      - name: Upload a draft, then make the complete release available
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/publish-release.mjs --publish release-bundle

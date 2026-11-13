@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline';"
+    />
+    <title>Mosaic</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f4f5f2;
+        color: #213d32;
+        font:
+          13px 'Segoe UI',
+          sans-serif;
+      }
+      .header {
+        height: 112px;
+        padding: 10px 14px;
+        border-bottom: 1px solid #dce3d7;
+      }
+      strong {
+        font-size: 15px;
+      }
+      p {
+        margin: 5px 0;
+        color: #667166;
+        font-size: 12px;
+      }
+      form {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      input {
+        min-width: 0;
+        flex: 1;
+        border: 1px solid #cfd8cd;
+        border-radius: 6px;
+        padding: 7px 10px;
+        color: #26382f;
+        background: white;
+      }
+      button {
+        border: 1px solid #cfd8cd;
+        border-radius: 6px;
+        padding: 7px 12px;
+        background: #fff;
+        color: #294e3e;
+        cursor: pointer;
+      }
+      .done {
+        background: #285b49;
+        color: #fff;
+      }
+      #error {
+        color: #a43d3d;
+        display: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header" hidden>
+      <strong id="name"></strong>
+      <p id="hint"></p>
+      <p id="error" role="alert"></p>
+      <form id="navigation">
+        <button type="button" id="back">←</button
+        ><button type="button" id="reload">↻</button
+        ><input id="url" spellcheck="false" /><button type="submit" id="go"></button
+        ><button type="button" id="done" class="done"></button>
+      </form>
+    </div>
+    <script src="account-window.js"></script>
+  </body>
+</html>

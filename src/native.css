@@ -1,0 +1,303 @@
+.native-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: var(--muted);
+  text-align: center;
+  background: var(--surface);
+}
+.native-placeholder h3 {
+  font-size: 15px;
+  color: var(--text);
+}
+.native-placeholder p {
+  font-size: 11px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.native-placeholder code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  margin-bottom: 6px;
+}
+.native-loading {
+  animation: native-spin 1.5s linear infinite;
+}
+@keyframes native-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.profile-badge select {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+  max-width: 75px;
+  outline-offset: 2px;
+}
+.profile-badge select option {
+  color: var(--text);
+  background: var(--surface);
+}
+.pane-address .native-nav {
+  display: flex;
+  gap: 1px;
+}
+.pane-address .native-nav .icon-button {
+  width: 20px;
+}
+.pane-address .native-nav .icon-button:disabled {
+  opacity: 0.25;
+}
+.native-page-status {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+}
+.native-zoom {
+  font-size: 8px;
+  color: inherit;
+  padding: 0 3px;
+  border-left: 1px solid var(--line);
+  margin-left: 4px;
+}
+.live-agent-panel {
+  width: 292px;
+}
+.live-agent-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 18px;
+}
+.live-connection {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 12px;
+  background: var(--surface-alt);
+  color: var(--muted);
+}
+.live-connection.enabled {
+  color: var(--green);
+  background: var(--green-tint);
+}
+.live-connection > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.live-connection b {
+  font-size: 11px;
+  font-weight: 550;
+}
+.live-connection span {
+  font-size: 9px;
+}
+.live-agent-explanation {
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin: 17px 0;
+}
+.live-target-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.live-target {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 9px;
+  gap: 6px;
+}
+.live-target label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+  cursor: pointer;
+}
+.live-target input {
+  accent-color: var(--green);
+  margin: 0;
+  flex-shrink: 0;
+}
+.live-target label > span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.live-target b {
+  font-size: 10px;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.live-target small {
+  font-size: 9px;
+  color: var(--muted);
+}
+.live-target .button {
+  padding: 0 6px;
+  font-size: 9px;
+}
+.live-access-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 15px 0;
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.live-access-note svg {
+  margin-top: 2px;
+}
+.live-agent-scroll > .button {
+  width: 100%;
+  font-size: 11px;
+}
+.live-config {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+  margin-top: 20px;
+}
+.live-config-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  font-size: 11px;
+}
+.live-config p {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.live-config pre {
+  font-size: 9px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--surface-alt);
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  user-select: text;
+}
+.live-config > .button {
+  width: 100%;
+  height: 29px;
+  font-size: 10px;
+}
+.live-events {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.live-events > div {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+}
+.live-events i {
+  height: 6px;
+  width: 6px;
+  flex-shrink: 0;
+  background: #a3b28d;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+.live-events i.failed {
+  background: #b87968;
+}
+.live-events i.started {
+  background: #6e9b51;
+  animation: pulse 1s infinite;
+}
+.live-events > div > span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.live-events b {
+  font-size: 10px;
+  font-weight: 500;
+}
+.live-events small {
+  font-size: 9px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.live-events time {
+  font-size: 7px;
+  color: var(--muted);
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.live-agent-footer {
+  padding: 13px 17px;
+  border-top: 1px solid var(--line);
+}
+.live-agent-footer .button {
+  width: 100%;
+  font-size: 10px;
+  color: #a56e58;
+}
+.desktop-mode .pane-titlebar {
+  height: 37px;
+  min-height: 37px;
+}
+.desktop-mode .pane-bottom {
+  height: 18px;
+  min-height: 18px;
+}
+.desktop-mode .browser-grid {
+  gap: 10px;
+  padding: 10px;
+}
+.desktop-mode .browser-pane {
+  border-radius: 5px;
+}
+.desktop-mode .profile-badge {
+  font-size: 9px;
+}
+.desktop-mode .pane-title {
+  gap: 2px;
+}
+.desktop-mode .workspace-content {
+  margin-left: 0;
+  border-radius: 0;
+  border-left: 0;
+}
+.desktop-mode .native-placeholder .button {
+  color: var(--text);
+}
+@media (max-width: 950px) {
+  .live-agent-panel {
+    width: 280px;
+  }
+}

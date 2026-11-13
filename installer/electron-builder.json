@@ -1,0 +1,38 @@
+{
+  "appId": "org.mosaic.browser",
+  "productName": "Mosaic",
+  "copyright": "",
+  "directories": { "buildResources": "installer", "output": "release" },
+  "artifactName": "${productName}-${version}-win-${arch}-portable.${ext}",
+  "asar": false,
+  "npmRebuild": false,
+  "forceCodeSigning": false,
+  "publish": null,
+  "toolsets": { "nsis": "1.2.1" },
+  "win": {
+    "target": [{ "target": "nsis", "arch": ["x64"] }, { "target": "zip", "arch": ["x64"] }],
+    "icon": "installer/icon.ico",
+    "signAndEditExecutable": false,
+    "signExecutable": false,
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "nsis": {
+    "guid": "caea9f6a-a946-5bfd-8929-50d16b3c7d3d",
+    "artifactName": "${productName}-${version}-win-${arch}-setup.${ext}",
+    "oneClick": true,
+    "perMachine": false,
+    "allowElevation": false,
+    "allowToChangeInstallationDirectory": false,
+    "runAfterFinish": false,
+    "deleteAppDataOnUninstall": false,
+    "createDesktopShortcut": false,
+    "createStartMenuShortcut": true,
+    "packElevateHelper": false,
+    "differentialPackage": false,
+    "include": "installer/installer.nsh",
+    "installerIcon": "installer/icon.ico",
+    "uninstallerIcon": "installer/icon.ico",
+    "uninstallDisplayName": "Mosaic ${version}",
+    "installerLanguages": ["en_US", "ko_KR"]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "mosaic-ui",
+  "private": true,
+  "version": "0.7.4",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4317 --strictPort",
+    "build": "tsc --noEmit && vite build && node scripts/audit-publication.mjs --stamp-build",
+    "preview": "vite preview --host 127.0.0.1 --port 4317 --strictPort",
+    "test:e2e": "playwright test",
+    "desktop": "npm run build && electron .",
+    "test:core": "node --test desktop/tests/*.test.mjs",
+    "test:desktop": "playwright test --config playwright.desktop.config.ts",
+    "package:win": "npm run build && node scripts/package-win.mjs",
+    "installer:win": "node scripts/build-installer.mjs",
+    "dist:win": "npm run package:win && npm run installer:win",
+    "test:installer": "node scripts/smoke-installer.mjs --run",
+    "sign:win": "node scripts/sign-win.mjs",
+    "icon:win": "node scripts/make-windows-icon.mjs",
+    "diagnose": "node scripts/diagnose-runtime.mjs",
+    "audit:publication": "node scripts/audit-publication.mjs --package",
+    "export:source": "node scripts/export-source.mjs",
+    "check:release": "node scripts/check-release.mjs --draft",
+    "check:release:public": "node scripts/check-release.mjs --public",
+    "release:collect": "node scripts/collect-release.mjs --draft",
+    "release:collect:public": "node scripts/collect-release.mjs --public"
+  },
+  "dependencies": {
+    "lucide-react": "1.70.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "electron": "45.2.3",
+    "electron-builder": "26.18.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.6"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "overrides": {
+    "minimatch@>=7.0.0 <11.0.1": "11.0.1"
+  },
+  "main": "desktop/main.mjs",
+  "description": "Mosaic multi-pane Chromium workspace",
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

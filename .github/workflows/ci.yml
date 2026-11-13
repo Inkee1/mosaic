@@ -1,0 +1,86 @@
+name: Windows release validation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      require-public:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check known dependency vulnerabilities
+        run: npm audit --audit-level=moderate
+      - name: Configure the selected usage-counting destination
+        env:
+          MOSAIC_TELEMETRY_HOST: ${{ vars.MOSAIC_TELEMETRY_HOST }}
+          MOSAIC_POSTHOG_TOKEN: ${{ vars.MOSAIC_POSTHOG_TOKEN }}
+        run: |
+          node --input-type=module -e "import {writeFileSync} from 'node:fs'; import {validateTelemetryConfig} from './desktop/usage-telemetry.mjs'; const host=process.env.MOSAIC_TELEMETRY_HOST, projectToken=process.env.MOSAIC_POSTHOG_TOKEN; if(host || projectToken){ const config=validateTelemetryConfig({host, projectToken}); if(!config) throw new Error('Invalid public ingestion configuration'); writeFileSync('telemetry.config.json', JSON.stringify(config)); }"
+      - name: Prepare Chrome for UI and connected-browser tests
+        run: npx playwright install chrome
+      - name: Typecheck and build UI
+        run: npm run build
+      - name: Core behavior tests
+        run: node scripts/run-release-tests.mjs core
+      - name: Chrome UI and automation tests
+        run: node scripts/run-release-tests.mjs ui
+      - name: Audit publishable source
+        run: node scripts/audit-publication.mjs --source-only
+      - name: Package Windows application
+        run: node scripts/package-win.mjs
+      - name: Native tests against the packaged executable
+        run: node scripts/run-release-tests.mjs native
+      - name: Build installer and portable archive
+        run: node scripts/build-installer.mjs
+      - name: Isolated installation, reinstall and uninstall
+        run: node scripts/smoke-installer.mjs --run
+      - name: Export audited source
+        run: node scripts/export-source.mjs
+      - name: Audit application contents
+        run: node scripts/audit-publication.mjs --package
+      - name: Validate draft artifacts and report public blockers
+        run: node scripts/check-release.mjs --draft
+      - name: Require public readiness for tagged releases
+        if: inputs.require-public || startsWith(github.ref, 'refs/tags/')
+        run: node scripts/check-release.mjs --public
+      - name: Collect only the verified release assets
+        id: bundle
+        env:
+          MOSAIC_REQUIRE_PUBLIC: ${{ inputs.require-public || startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          if ($env:MOSAIC_REQUIRE_PUBLIC -eq 'true') { node scripts/collect-release.mjs --public }
+          else { node scripts/collect-release.mjs --draft }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: mosaic-windows-release
+          path: ${{ steps.bundle.outputs.directory }}/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+      # Only the explicit bundle is uploaded. No profiles, raw test logs or traces.

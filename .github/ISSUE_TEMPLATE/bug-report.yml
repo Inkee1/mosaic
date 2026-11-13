@@ -1,0 +1,33 @@
+name: Bug report / 오류 제보
+description: Report a reproducible Mosaic issue / 재현 가능한 오류를 알려 주세요.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: "For security issues, email tensordev9@gmail.com. Do not include passwords, API keys, cookies, account data or browser profiles. 보안 문제는 이메일로 보내고 민감한 자료를 첨부하지 마세요."
+  - type: input
+    id: version
+    attributes:
+      label: Mosaic version / 버전
+      placeholder: "0.7.4"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Windows version and interface language / Windows 버전·표시 언어
+      placeholder: "Windows 11, English"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps, expected result and actual result / 재현 절차·예상 결과·실제 결과
+      description: Use a local page or test account where possible. / 가능하면 로컬 페이지나 테스트 계정으로 설명해 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Optional diagnostics / 진단 요약 (선택)
+      description: Use the diagnostic summary in Mosaic settings and review it before sharing. / 설정의 진단 요약을 사용하고 보내기 전에 확인해 주세요.

@@ -1,8 +1,9 @@
 {
-  "repository": null,
+  "repository": "Inkee1/mosaic",
   "supportEmail": "tensordev9@gmail.com",
   "supportUrl": null,
   "channel": "beta",
+  "windowsSigning": "unsigned-beta",
   "licenseStatus": "approved",
   "licenseFile": "LICENSE.md",
   "telemetryRequired": true,

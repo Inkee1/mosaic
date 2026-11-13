@@ -58,11 +58,26 @@ test('publication refuses another repository, modified downloads, extra files an
   const files = [name + '-setup.exe', name + '-portable.zip', name + '-artifacts.json', name + '-SHA256SUMS.txt', stem + '-source.zip', stem + '-source-manifest.json', stem + '-source-SHA256SUMS.txt', 'release-notes.md'];
   for (const file of files) await writeFile(join(directory, file), 'fixture');
   const bundle = { schemaVersion: 1, version: '0.7.4', repository: 'example/mosaic', channel: 'beta', publicReady: true,
+    signingMode: 'unsigned-beta', signed: false, warnings: [{ code: 'unsigned-beta', message: 'Unsigned beta.' }],
     checks: { core: true, ui: true, native: true }, installerExecuted: true, blockers: [], commit: 'f'.repeat(40),
     files: files.map(file => ({ file, sha256: createHash('sha256').update('fixture').digest('hex') })) };
   const put = () => writeFile(join(directory, 'RELEASE.json'), JSON.stringify(bundle));
   await put();
   assert.equal((await verifyReleaseBundle(directory, { repository: 'example/mosaic', commit: 'f'.repeat(40) })).version, '0.7.4');
+  bundle.channel = 'stable'; await put();
+  await assert.rejects(verifyReleaseBundle(directory), /signing|unsigned/i);
+  bundle.channel = 'beta'; bundle.signingMode = 'required'; await put();
+  await assert.rejects(verifyReleaseBundle(directory), /signing|unsigned/i);
+  bundle.signed = true; await put();
+  assert.equal((await verifyReleaseBundle(directory)).signed, true);
+  bundle.signingMode = 'unsigned-beta'; bundle.signed = false; bundle.warnings = []; await put();
+  await assert.rejects(verifyReleaseBundle(directory), /unsigned|warning/i);
+  bundle.warnings = [{ code: 'unsigned-beta', message: 'Unsigned beta.' }]; await put();
+  for (const value of [undefined, null, 'false', 0]) {
+    bundle.signed = value; await put();
+    await assert.rejects(verifyReleaseBundle(directory), /signing/i);
+  }
+  bundle.signed = false; await put();
   await assert.rejects(verifyReleaseBundle(directory, { repository: 'different/mosaic', commit: 'f'.repeat(40) }), /repository/i);
   await assert.rejects(verifyReleaseBundle(directory, { repository: 'example/mosaic', commit: 'e'.repeat(40) }), /commit/i);
   await writeFile(join(directory, files[0]), 'tampered');

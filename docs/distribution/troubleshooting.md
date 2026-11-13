@@ -7,7 +7,7 @@
 설치 파일의 속성에서 디지털 서명을 확인하거나 다음 명령으로 상태를 읽을 수 있습니다.
 
 ```powershell
-Get-AuthenticodeSignature -LiteralPath .\Mosaic-0.7.4-win-x64-setup.exe
+Get-AuthenticodeSignature -LiteralPath .\Mosaic-0.7.5-win-x64-setup.exe
 ```
 
 `NotSigned`이면 서명되지 않은 파일입니다. `Valid`와 배포자 이름을 함께 확인하세요. 신뢰·조직 정책·평판에 따라 서명된 파일도 실행이 제한될 수 있습니다. 배포자와 코드 서명 준비가 끝나지 않은 상태를 앱에서 우회하지 않습니다.

@@ -9,7 +9,7 @@ import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { auditPublication, stampBuild } from '../../scripts/audit-publication.mjs';
 import { exportSource, readSourceArchive } from '../../scripts/export-source.mjs';
-import { evaluateRelease, windowsJson } from '../../scripts/check-release.mjs';
+import { evaluateRelease, evaluateSigningPolicy, windowsJson } from '../../scripts/check-release.mjs';
 import { copyReleaseAsset } from '../../scripts/release-evidence.mjs';
 
 const pending = { repository: null, supportEmail: null, publisher: null, channel: 'beta', licenseStatus: 'pending', licenseFile: null };
@@ -202,13 +202,18 @@ test('exported TypeScript module sources retain declarations and still typecheck
   for (const path of ['shared/contract.d.mts', 'shared/legacy.d.cts']) assert.ok(stamp.inputs.some((file) => file.path === path), path + ' must participate in build provenance');
 });
 
-async function releaseFixture(t, releaseConfig = pending) {
+async function releaseFixture(t, releaseConfig = pending, executable = null) {
   const root = await fixture(t);
   await put(root, 'release.config.json', releaseConfig);
   const packageRoot = join(root, 'release/Mosaic-0.7.0-win-x64');
-  await put(packageRoot, 'Mosaic.exe', 'not an executable signature fixture');
+  await put(packageRoot, 'Mosaic.exe', executable || 'not an executable signature fixture');
   await put(packageRoot, 'resources/app/package.json', { version: '0.7.0' });
   await put(packageRoot, 'resources/app/release.config.json', releaseConfig);
+  if (releaseConfig.licenseStatus === 'approved') {
+    const license = 'Fixture license: noncommercial use and modification are permitted with attribution. Commercial use requires separate permission.\n';
+    await put(root, releaseConfig.licenseFile, license);
+    await put(packageRoot, 'MOSAIC-LICENSE.txt', license);
+  }
   await put(packageRoot, 'resources/app/desktop/main.mjs', 'export const fixture = true;');
   await put(packageRoot, 'README.md', await readFile(join(root, 'README.md')));
   await put(packageRoot, 'resources/app/desktop/credentials.mjs', await readFile(join(root, 'desktop/credentials.mjs')));
@@ -226,7 +231,7 @@ async function releaseFixture(t, releaseConfig = pending) {
   const artifacts = [];
   for (const [kind, suffix] of [['installer', 'setup.exe'], ['portable', 'portable.zip']]) {
     const file = 'Mosaic-0.7.0-win-x64-' + suffix;
-    const data = Buffer.from('fixture ' + kind);
+    const data = kind === 'installer' && executable ? executable : Buffer.from('fixture ' + kind);
     await put(root, 'release/' + file, data);
     artifacts.push({ kind, file, bytes: data.length, sha256: hash(data) });
   }
@@ -248,6 +253,43 @@ test('draft validation can pass audited artifacts but public validation reports 
   const publicResult = await evaluateRelease({ root, mode: 'public' });
   assert.equal(publicResult.ok, false);
   assert.ok(publicResult.blockers.some((entry) => entry.code === 'signatures'));
+});
+
+test('explicit unsigned beta can pass public validation and preserves an unsigned warning', { skip: process.platform !== 'win32' }, async t => {
+  const config = { ...pending, repository: 'example/mosaic', supportEmail: 'support@mosaic.invalid.org',
+    licenseStatus: 'approved', licenseFile: 'LICENSE.md', windowsSigning: 'unsigned-beta' };
+  const executable = await readFile(new URL('../../node_modules/electron-winstaller/vendor/7z.exe', import.meta.url));
+  const root = await releaseFixture(t, config, executable);
+  const report = await evaluateRelease({ root, mode: 'public' });
+  assert.equal(report.ok, true, JSON.stringify(report));
+  assert.equal(report.publicReady, true);
+  assert.equal(report.signingMode, 'unsigned-beta');
+  assert.equal(report.signed, false);
+  assert.ok(report.warnings.some(item => item.code === 'unsigned-beta'));
+  assert.ok(report.signatures.length >= 2);
+  await put(root, 'release.config.json', { ...config, windowsSigning: 'required' });
+  const changed = await evaluateRelease({ root, mode: 'public' });
+  assert.ok(changed.errors.some(item => item.code === 'config-mismatch'));
+  assert.ok(changed.blockers.some(item => item.code === 'signatures'));
+});
+
+test('unsigned policy is beta-only and cannot waive invalid or unavailable signature verification', () => {
+  const unsigned = [{ file: 'Mosaic.exe', status: 'NotSigned', trusted: false }];
+  const config = { channel: 'beta', windowsSigning: 'unsigned-beta' };
+  assert.deepEqual(evaluateSigningPolicy(config, unsigned).blockers, []);
+  assert.ok(evaluateSigningPolicy({ ...config, channel: 'stable' }, unsigned).blockers.some(item => item.code === 'signing-policy'));
+  assert.ok(evaluateSigningPolicy({ ...config, windowsSigning: 'anything' }, unsigned).blockers.some(item => item.code === 'signing-policy'));
+  for (const status of ['HashMismatch', 'NotTrusted', 'UnknownError', 'Unverified', 'WindowsVerificationRequired']) {
+    assert.ok(evaluateSigningPolicy(config, [{ ...unsigned[0], status }]).blockers.some(item => item.code === 'signatures'), status);
+  }
+  assert.ok(evaluateSigningPolicy(config, []).blockers.some(item => item.code === 'signatures'));
+  const strict = evaluateSigningPolicy({ channel: 'stable' }, unsigned);
+  assert.equal(strict.signingMode, 'required');
+  assert.ok(strict.blockers.some(item => item.code === 'publisher'));
+  assert.ok(strict.blockers.some(item => item.code === 'signatures'));
+  const signed = evaluateSigningPolicy({ channel: 'stable', publisher: 'Mosaic' }, [{ file: 'Mosaic.exe', status: 'Valid', trusted: true }]);
+  assert.equal(signed.signed, true);
+  assert.deepEqual(signed.blockers, []);
 });
 
 test('collection binds every source and binary asset to the bytes checked by the release gate', async t => {

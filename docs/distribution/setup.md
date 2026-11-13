@@ -1,21 +1,21 @@
 # Mosaic 시작하기
 
-Mosaic는 여러 웹 화면과 AI 채팅을 한 작업 공간에 모으는 Windows x64 데스크톱 앱입니다. 0.7.4은 비상업 이용 조건의 미리보기입니다. 배포자, 공개 저장소, 집계 연결과 신뢰할 수 있는 코드 서명이 아직 확정되지 않은 빌드는 공개 출시 준비가 완료된 상태가 아닙니다.
+Mosaic는 여러 웹 화면과 AI 채팅을 한 작업 공간에 모으는 Windows x64 데스크톱 앱입니다. 0.7.5는 비상업 이용 조건의 미서명 베타입니다. 공식 배포 경로는 [Inkee1/mosaic Releases](https://github.com/Inkee1/mosaic/releases)이며, 게시자 표기는 **Inkee1 / Mosaic**입니다.
 
 ## 설치와 실행
 
-설치 파일 이름은 `Mosaic-0.7.4-win-x64-setup.exe`입니다. 한 번 실행하면 현재 Windows 사용자 계정의 기본 위치에 설치하며 관리자 권한을 요구하지 않습니다. 폴더를 고르는 마법사 없이 진행 상황만 표시합니다. 설치 전에 이전 Mosaic 창에서 사이트 작업을 저장하고 앱을 종료하세요. 설치가 끝나면 시작 메뉴의 Mosaic 바로가기로 직접 여세요. 바탕화면 바로가기는 만들지 않으며 설치 후 앱이 자동으로 실행되지 않습니다.
+설치 파일 이름은 `Mosaic-0.7.5-win-x64-setup.exe`입니다. 한 번 실행하면 현재 Windows 사용자 계정의 기본 위치에 설치하며 관리자 권한을 요구하지 않습니다. 폴더를 고르는 마법사 없이 진행 상황만 표시합니다. 설치 전에 이전 Mosaic 창에서 사이트 작업을 저장하고 앱을 종료하세요. 설치가 끝나면 시작 메뉴의 Mosaic 바로가기로 직접 여세요. 바탕화면 바로가기는 만들지 않으며 설치 후 앱이 자동으로 실행되지 않습니다.
 
-압축판은 `Mosaic-0.7.4-win-x64-portable.zip`입니다. 전체를 새 폴더에 풀고 `Mosaic.exe`를 실행하세요. 실행 파일만 다른 곳으로 옮기면 작동하지 않습니다. 압축판도 사용자 데이터는 Windows 사용자 계정의 앱 데이터 폴더에 저장합니다. USB 안에만 데이터가 머무르는 방식이 아닙니다.
+압축판은 `Mosaic-0.7.5-win-x64-portable.zip`입니다. 전체를 새 폴더에 풀고 `Mosaic.exe`를 실행하세요. 실행 파일만 다른 곳으로 옮기면 작동하지 않습니다. 압축판도 사용자 데이터는 Windows 사용자 계정의 앱 데이터 폴더에 저장합니다. USB 안에만 데이터가 머무르는 방식이 아닙니다.
 
-다운로드한 파일의 SHA-256은 함께 제공된 `Mosaic-0.7.4-win-x64-SHA256SUMS.txt`와 비교할 수 있습니다.
+다운로드한 파일의 SHA-256은 함께 제공된 `Mosaic-0.7.5-win-x64-SHA256SUMS.txt`와 비교할 수 있습니다.
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath .\Mosaic-0.7.4-win-x64-setup.exe
-Get-AuthenticodeSignature -LiteralPath .\Mosaic-0.7.4-win-x64-setup.exe
+Get-FileHash -Algorithm SHA256 -LiteralPath .\Mosaic-0.7.5-win-x64-setup.exe
+Get-AuthenticodeSignature -LiteralPath .\Mosaic-0.7.5-win-x64-setup.exe
 ```
 
-해시는 같은 파일인지 확인하는 수단이며 배포자의 신원을 보증하지 않습니다. Windows에서 실행을 차단하면 [문제 해결](troubleshooting.md)의 서명 안내를 확인하세요.
+이 베타의 설치 파일은 `NotSigned`가 정상입니다. 해시는 같은 파일인지 확인하는 수단이며 배포자의 신원을 보증하지 않습니다. 공식 저장소의 파일·해시를 확인한 뒤 실행 여부를 결정하세요. Windows가 경고를 표시하거나 조직 정책으로 실행을 차단할 수 있습니다. [문제 해결](troubleshooting.md)을 참고하세요.
 
 ## 첫 작업
 

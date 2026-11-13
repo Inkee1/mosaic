@@ -16,7 +16,7 @@ export async function windowsJson(command, extraEnv = {}) {
 const VERSION = /^\d+\.\d+\.\d+(?:-[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*)?$/;
 const REPOSITORY = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})\/[A-Za-z0-9](?:[A-Za-z0-9._-]{0,99})$/;
 const json = async (path) => JSON.parse(await readFile(path, 'utf8'));
-const configKeys = ['repository', 'supportEmail', 'supportUrl', 'channel', 'licenseStatus', 'licenseFile', 'publisher', 'telemetryRequired'];
+const configKeys = ['repository', 'supportEmail', 'supportUrl', 'channel', 'licenseStatus', 'licenseFile', 'publisher', 'telemetryRequired', 'windowsSigning'];
 const configIdentity = (value) => JSON.stringify(configKeys.map((key) => value?.[key]));
 const fileIdentity = (files) => JSON.stringify([...files].map(({ path, bytes, sha256 }) => ({ path, bytes, sha256 })).sort((a, b) => a.path.localeCompare(b.path, 'en')));
 async function ordinaryFile(root, file) {
@@ -49,6 +49,25 @@ async function signatures(files, publisher) {
   } catch { return files.map(({ file }) => ({ file, status: 'Unverified', trusted: false })); }
 }
 
+export function evaluateSigningPolicy(config, results) {
+  const signingMode = config.windowsSigning ?? 'required';
+  const blockers = [], warnings = [];
+  const signed = results.length > 0 && results.every(item => item.status === 'Valid' && item.trusted === true);
+  const block = (code, message) => blockers.push({ code, message });
+  if (!['required', 'unsigned-beta'].includes(signingMode) || (signingMode === 'unsigned-beta' && config.channel !== 'beta'))
+    block('signing-policy', 'Unsigned distribution must be explicitly selected with windowsSigning=unsigned-beta and channel=beta. Stable releases require signing.');
+  if (signingMode === 'unsigned-beta') {
+    if (!results.length || results.some(item => !['Valid', 'NotSigned'].includes(item.status)))
+      block('signatures', 'Unsigned beta still requires live Windows inspection: only valid signatures or unsigned files are allowed. Invalid or unavailable verification blocks release.');
+    if (!signed) warnings.push({ code: 'unsigned-beta', message: 'This beta is unsigned. Windows may show an unknown-publisher or SmartScreen warning. Verify the official download and SHA-256 checksum before running.' });
+  } else {
+    if (typeof config.publisher !== 'string' || !config.publisher.trim() || config.publisher.trim() !== config.publisher || /[\x00-\x1f]/.test(config.publisher))
+      block('publisher', 'Set the confirmed publisher name matching the signing certificate common name.');
+    if (!signed) block('signatures', 'All shipped EXE/DLL/NODE files and the installer need current, trusted, timestamped Authenticode verification matching the configured publisher. Stored signed flags are not evidence.');
+  }
+  return { signingMode, signed, blockers, warnings };
+}
+
 export async function evaluateRelease({ root = projectRoot, mode = 'draft' } = {}) {
   if (!['draft', 'public'].includes(mode)) throw new Error('Choose draft or public release mode.');
   root = resolve(root);
@@ -76,7 +95,6 @@ export async function evaluateRelease({ root = projectRoot, mode = 'draft' } = {
   const hasSupportUrl = supportUrl && !/(?:^|\.)(?:example\.(?:com|net|org)|example|invalid|test|localhost)$/i.test(new URL(supportUrl).hostname);
   const hasSupportEmail = typeof config.supportEmail === 'string' && /^[A-Za-z0-9_.+%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(config.supportEmail) && !/@(?:.*\.)?(?:example\.(?:com|net|org)|invalid|test)$/i.test(config.supportEmail);
   if (!hasSupportUrl && !hasSupportEmail) block('support-contact', 'Set a monitored, approved HTTPS contact form URL or support email.');
-  if (typeof config.publisher !== 'string' || !config.publisher.trim() || config.publisher.trim() !== config.publisher || /[\x00-\x1f]/.test(config.publisher)) block('publisher', 'Set the confirmed publisher name matching the signing certificate common name.');
   if (!['stable', 'beta'].includes(config.channel)) block('channel', 'Select the stable or beta release channel.');
   let approvedLicense = false;
   if (config.licenseStatus === 'approved' && /^LICENSE(?:\.txt|\.md)?$/.test(config.licenseFile || '')) {
@@ -172,7 +190,8 @@ export async function evaluateRelease({ root = projectRoot, mode = 'draft' } = {
   const signatureFiles = packageFiles.filter((entry) => ['.exe', '.dll', '.node'].includes(extname(entry.path).toLowerCase())).map((entry) => ({ file: base + '/' + entry.path, absolute: join(packageRoot, entry.path) }));
   signatureFiles.push({ file: base + '-setup.exe', absolute: join(release, base + '-setup.exe') });
   const signatureResults = await signatures(signatureFiles, config.publisher);
-  if (!signatureResults.length || signatureResults.some((entry) => !entry.trusted)) block('signatures', 'All shipped EXE/DLL/NODE files and the installer need current, trusted, timestamped Authenticode verification matching the configured publisher. Stored signed flags are not evidence.');
+  const signing = evaluateSigningPolicy(config, signatureResults);
+  blockers.push(...signing.blockers);
   if (approvedLicense) {
     const license = audit.source.files.find((entry) => entry.path === config.licenseFile);
     const packedLicense = packageFiles.find((entry) => entry.path === 'MOSAIC-LICENSE.txt');
@@ -182,6 +201,7 @@ export async function evaluateRelease({ root = projectRoot, mode = 'draft' } = {
   return {
     schemaVersion: 1, version, mode, ok: errors.length === 0 && (mode === 'draft' || publicReady), publicReady,
     sourceSha256: sha256(JSON.stringify(audit.source.files)), validatedAssets,
+    signingMode: signing.signingMode, signed: signing.signed, warnings: signing.warnings,
     scope: 'Artifact integrity, publication allowlist and live Windows signatures. Native/install smoke tests and owner legal approval remain separate release requirements.',
     errors, blockers, audit: { ok: audit.ok, sourceFiles: audit.source.files.length, packageFiles: packageFiles.length, findings: audit.findings }, signatures: signatureResults,
   };

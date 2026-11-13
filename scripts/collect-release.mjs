@@ -47,6 +47,7 @@ try {
   files.push('release-notes.md');
   if (context.sourceSha256 !== await sourceIdentity(projectRoot)) throw new Error('Source changed during release collection.');
   const bundle = { schemaVersion: 1, ...context, repository: config.repository, channel: config.channel,
+    signingMode: report.signingMode, signed: report.signed, warnings: report.warnings,
     commit,
     publicReady: report.publicReady && evidenceBlockers.length === 0,
     blockers: [...report.blockers.map(item => item.code), ...evidenceBlockers],

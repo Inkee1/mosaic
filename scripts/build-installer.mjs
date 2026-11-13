@@ -63,7 +63,7 @@ export async function buildInstaller(root, options = {}) {
     await writeFile(paths.signatures, JSON.stringify({ schemaVersion: 1, version: pkg.version, verifiedAt: new Date().toISOString(), signed, files: records }, null, 2) + '\n');
     const manifest = await writeArtifactManifest(root, pkg.version, { signed });
     console.log('Installer and portable ZIP created; checksums: ' + paths.checksums);
-    console.log(signed ? 'All shipped executable signatures verified.' : 'Unsigned preview. A trusted publisher certificate is still required for public release.');
+    console.log(signed ? 'All shipped executable signatures verified.' : 'Unsigned build. Public distribution requires the configured unsigned-beta policy and final release checks.');
     return manifest;
   } finally {
     if (previousDiscovery === undefined) delete process.env.CSC_IDENTITY_AUTO_DISCOVERY;

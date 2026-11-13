@@ -1,8 +1,15 @@
-# Mosaic 0.7.4
+# Mosaic 0.7.5
+
+**여러 웹페이지와 AI를 한 화면에서. 화면마다 다른 계정으로, 필요한 작업을 나란히.**
+
+**Your web pages and AI, side by side.** Keep separate accounts in each pane and work with AI on the pages you choose.
 
 Mosaic is a Windows x64 desktop browser for arranging web pages and AI conversations in one workspace. The interface supports Korean and English. AI features require your own supported CLI installation and provider account.
 
 ## Changes / 변경 사항
+
+- Connects optional usage counting to PostHog US with separate consent, off by default. Test traffic is excluded from the active-installation dashboard. / 별도 동의를 받는 미국 지역 사용량 집계를 연결하고 테스트 기록은 제외합니다.
+- Publishes under an explicit unsigned-beta policy; stable releases still require verified signing. / 미서명 베타 정책을 적용하며 정식 채널은 검증된 서명이 필요합니다.
 
 - Remembers site permission decisions during the app run and merges duplicate requests. Choices remain separate for each pane, site and capability. / 실행 중 사이트 권한 선택을 기억하고 중복 요청을 합칩니다.
 - Preserves microphone permission when a later camera request is denied. / 카메라 요청을 거부해도 기존 마이크 허용은 유지합니다.
@@ -12,7 +19,11 @@ Mosaic is a Windows x64 desktop browser for arranging web pages and AI conversat
 
 ## Install / 설치
 
-Use `Mosaic-0.7.4-win-x64-setup.exe`, or extract the complete `Mosaic-0.7.4-win-x64-portable.zip` and run `Mosaic.exe`. Save your work and close Mosaic before updating. User data is stored in `%APPDATA%\MosaicBrowser` and retained on uninstall.
+**Unsigned beta:** Windows may show an unknown-publisher or SmartScreen warning. Download from [Inkee1/mosaic Releases](https://github.com/Inkee1/mosaic/releases) and compare the SHA-256 checksum before running. Managed computers may block unsigned apps.
+
+**미서명 베타:** Windows가 알 수 없는 게시자 또는 SmartScreen 경고를 표시할 수 있습니다. 공식 저장소에서 받고 SHA-256을 비교한 뒤 실행 여부를 결정하세요. 조직 정책에 따라 실행이 제한될 수 있습니다.
+
+Use `Mosaic-0.7.5-win-x64-setup.exe`, or extract the complete `Mosaic-0.7.5-win-x64-portable.zip` and run `Mosaic.exe`. Save your work and close Mosaic before updating. User data is stored in `%APPDATA%\MosaicBrowser` and retained on uninstall.
 
 설치 파일을 실행하거나 압축판 전체를 푼 뒤 `Mosaic.exe`를 실행하세요. 업데이트 전 작업을 저장하고 앱을 닫아 주세요. 제거 후에도 사용자 데이터는 유지됩니다.
 

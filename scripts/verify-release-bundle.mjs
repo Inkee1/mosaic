@@ -7,6 +7,11 @@ export async function verifyReleaseBundle(directory, { repository, commit, requi
   if ((await lstat(directory)).isSymbolicLink() || (await lstat(join(directory, 'RELEASE.json'))).isSymbolicLink()) throw new Error('Linked release bundle');
   const bundle = JSON.parse(await readFile(join(directory, 'RELEASE.json'), 'utf8'));
   if (bundle.schemaVersion !== 1 || !['beta', 'stable'].includes(bundle.channel)) throw new Error('Invalid release metadata');
+  if (typeof bundle.signed !== 'boolean' || !['required', 'unsigned-beta'].includes(bundle.signingMode) ||
+      (bundle.signingMode === 'unsigned-beta' && bundle.channel !== 'beta') ||
+      (requirePublic && bundle.signingMode === 'required' && bundle.signed !== true)) throw new Error('Invalid or incomplete release signing policy');
+  if (requirePublic && bundle.signingMode === 'unsigned-beta' && bundle.signed !== true &&
+      !bundle.warnings?.some(item => item.code === 'unsigned-beta')) throw new Error('Unsigned beta warning is required');
   const { name } = pathsForRelease(directory, bundle.version), stem = 'Mosaic-' + bundle.version;
   if (!/^[a-z0-9][a-z0-9-]*\/[a-z0-9][a-z0-9._-]*$/i.test(bundle.repository || '') || (repository && bundle.repository.toLowerCase() !== repository.toLowerCase())) throw new Error('Release repository does not match');
   if (commit && bundle.commit !== commit) throw new Error('Release commit does not match');

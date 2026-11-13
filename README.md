@@ -2,9 +2,13 @@
 
 [English quick start](docs/distribution/quickstart.en.md) · 한국어 / English 인터페이스 지원
 
-여러 웹 화면과 AI 채팅을 한 작업 공간에서 사용하는 Windows 데스크톱 브라우저입니다. 사이트별 작업을 나란히 보고, 선택한 화면에서 Claude Code 또는 Codex와 함께 작업할 수 있습니다.
+**여러 웹페이지와 AI를 한 화면에서. 화면마다 다른 계정으로, 필요한 작업을 나란히.**
 
-**0.7.4 미리보기.** 설치형·압축형 배포를 준비 중입니다. 공개 저장소, 집계 연결과 배포자 서명이 확정되기 전까지 공개 출시가 완료된 상태는 아닙니다. 문의: tensordev9@gmail.com
+Mosaic는 여러 웹 화면과 AI 채팅을 한 작업 공간에서 사용하는 Windows 데스크톱 브라우저입니다. 자료 조사, 콘텐츠 비교, 여러 계정의 작업을 나란히 보고, 선택한 화면에서 Claude Code 또는 Codex와 함께 작업할 수 있습니다.
+
+**Your web pages and AI, side by side.** Keep separate accounts in each pane and work with Claude Code or Codex on the pages you choose.
+
+**0.7.5 미서명 베타.** 공식 소스와 배포 파일은 [Inkee1/mosaic](https://github.com/Inkee1/mosaic)의 [Releases](https://github.com/Inkee1/mosaic/releases)에서 확인하세요. Windows가 알 수 없는 게시자 경고를 표시할 수 있습니다. 문의: tensordev9@gmail.com
 
 ## 할 수 있는 일
 
@@ -18,7 +22,7 @@ AI 응답이 끝났다는 표시는 사이트의 실제 작업 성공을 보증�
 
 ## 설치와 첫 사용
 
-설치판은 `Mosaic-0.7.4-win-x64-setup.exe`, 압축판은 `Mosaic-0.7.4-win-x64-portable.zip`입니다. 압축판은 전체를 풀고 `Mosaic.exe`를 실행합니다. 두 방식 모두 사용자 데이터는 `%APPDATA%\MosaicBrowser`에 보관하며 앱 제거 시에도 유지합니다.
+설치판은 `Mosaic-0.7.5-win-x64-setup.exe`, 압축판은 `Mosaic-0.7.5-win-x64-portable.zip`입니다. 압축판은 전체를 풀고 `Mosaic.exe`를 실행합니다. 두 방식 모두 사용자 데이터는 `%APPDATA%\MosaicBrowser`에 보관하며 앱 제거 시에도 유지합니다.
 
 AI 기능에는 공식 Claude Code 또는 Codex CLI 설치와 본인 계정 로그인이 필요합니다. 제공자의 요금·한도는 별도로 적용됩니다. 자세한 절차는 [시작하기](docs/distribution/setup.md)를 확인하세요.
 
@@ -31,7 +35,7 @@ AI 기능에는 공식 Claude Code 또는 Codex CLI 설치와 본인 계정 로�
 - [문제 해결](docs/distribution/troubleshooting.md)
 - [기여와 개발](docs/distribution/contributing.md)
 - [배포 절차와 공개 전 확인](docs/distribution/release.md)
-- [0.7.4 검증 범위와 남은 항목](docs/distribution/validation.md)
+- [0.7.5 검증 범위와 남은 항목](docs/distribution/validation.md)
 - [라이선스 결정 사항](docs/distribution/license-policy.md)
 - [타사 소프트웨어 고지](docs/distribution/third-party-notices.md)
 
@@ -59,7 +63,7 @@ npm run check:release   # 로컬 미리보기 점검
 npm run check:release:public
 ```
 
-`check:release:public`은 미확정 배포 정보·라이선스·서명을 오류로 보고합니다. 배포 명령만으로 외부에 게시하지 않습니다. 배포 정보는 `release.config.json`에서 관리합니다.
+`check:release:public`은 배포 정보·라이선스·집계 연결·파일 무결성과 서명 정책을 검사합니다. 미서명은 명시적으로 선택한 베타에서만 허용하며 정식 채널은 서명이 필요합니다. 배포 정보는 `release.config.json`에서 관리합니다.
 
 ## 라이선스
 

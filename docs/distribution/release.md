@@ -1,6 +1,6 @@
 # Windows 배포 절차
 
-대상은 Windows x64의 Mosaic 0.7.4입니다. 일반 빌드·검사 명령은 외부에 게시하지 않습니다. 명시적으로 `publish-release.mjs --publish`를 실행하거나 GitHub의 **Prepare or publish Windows release**에서 `publish`를 선택한 경우에만 공개합니다. 계정 로그인·인증서 구매·Windows 보호 설정 변경은 자동으로 수행하지 않습니다.
+대상은 Windows x64의 Mosaic 0.7.5입니다. 일반 빌드·검사 명령은 외부에 게시하지 않습니다. 명시적으로 `publish-release.mjs --publish`를 실행하거나 GitHub의 **Prepare or publish Windows release**에서 `publish`를 선택한 경우에만 공개합니다. 계정 로그인·인증서 구매·Windows 보호 설정 변경은 자동으로 수행하지 않습니다.
 
 ## 자동 검증과 공개
 
@@ -22,9 +22,11 @@
 
 빌드 의존성 minimatch는 [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249)에 대응해 영향받는 7–10 계열만 11.0.1로 고정합니다. `npm audit --audit-level=moderate`와 실제 패키징으로 검증하며 electron-builder가 자체 수정되면 override를 검토합니다.
 
-## 현재 공개 차단 항목
+## 선택한 배포 정책
 
-`release.config.json`의 `repository`, `publisher`는 미정입니다. 문의 주소는 tensordev9@gmail.com이며, 라이선스는 PolyForm Noncommercial 1.0.0으로 설정되었습니다. 집계 프로젝트와 신뢰할 수 있는 코드 서명도 준비되어야 합니다. [집계 연결](analytics.md)에 따라 `telemetry.config.json`을 준비하고 배포 정보를 확정하세요. 공개 저장소는 확인된 `owner/repository` 형식만 사용하며 채널은 `beta` 또는 `stable`입니다.
+`release.config.json`은 `repository: Inkee1/mosaic`, `channel: beta`, `windowsSigning: unsigned-beta`입니다. 소유자가 미서명 베타 공개를 선택했으므로 인증서의 common name인 `publisher`는 `null`로 유지합니다. 문의 주소는 tensordev9@gmail.com, 라이선스는 PolyForm Noncommercial 1.0.0입니다. [집계 연결](analytics.md)의 검증된 수신 설정을 패키지와 CI에 동일하게 넣어야 합니다.
+
+미서명 베타는 Windows가 `NotSigned` 또는 `Valid`로 확인한 파일만 허용합니다. `HashMismatch`, `NotTrusted`, 검사 실패·미실행은 계속 차단합니다. `stable` 채널 또는 기본 `windowsSigning: required`는 배포자와 일치하는 신뢰된 타임스탬프 서명을 요구합니다. 공개 묶음의 `RELEASE.json`에는 실제 `signed` 결과, 선택한 `signingMode`와 미서명 경고가 포함됩니다.
 
 문의 이메일 공개는 앱의 필수 조건이 아닙니다. 비공개로 내용을 받는 문의 폼을 준비하고 HTTPS 응답자 주소를 `supportUrl`에 설정하면 앱의 **문의하기** 버튼으로 연결됩니다. 이메일을 공개하지 않으려면 `supportEmail`은 `null`로 유지하세요. 두 값 모두 있으면 폼이 우선하지만 설정 파일 자체가 배포되므로 이메일도 공개됩니다. 편집자 전용 링크나 관리용 토큰을 넣지 마세요.
 
@@ -54,7 +56,7 @@ node scripts/check-release.mjs --draft
 node scripts/check-release.mjs --public
 ```
 
-이미 같은 버전의 실행 폴더가 있으면 검증된 폴더를 교체할지 확인하고 `node scripts/package-win.mjs --replace`로 그 버전만 다시 만듭니다. 모든 명령의 종료 코드를 확인하고 실패 후 다음 단계로 넘어가지 마세요. 마지막 `--public`은 현재 미정 사항이 남아 있는 동안 실패하는 것이 정상입니다.
+이미 같은 버전의 실행 폴더가 있으면 해당 버전이 실행 중이지 않은지 확인하고 `node scripts/package-win.mjs --replace`로 그 버전만 다시 만듭니다. 모든 명령의 종료 코드를 확인하고 실패 후 다음 단계로 넘어가지 마세요. 마지막 `--public`은 집계 설정 누락, 파일 불일치 또는 선택한 서명 정책 위반이 있으면 실패합니다.
 
 설치 검사는 `release/.installer-smoke/` 아래의 고유한 테스트 폴더에서 설치·업그레이드·임시 프로필 실행·제거를 확인합니다. 기존 0.6.2 폴더가 있으면 이전 버전 파일을 테스트 위치에 복사해 업그레이드하고, 없으면 같은 버전 재설치만 확인했다고 기록합니다. 실제 설치, 실행 중인 Mosaic 또는 기존 바로가기가 있으면 검사를 거부합니다. 이런 경우 실제 사용 환경을 지우지 말고 깨끗한 Windows 검사 환경을 준비하세요. 이 검사는 모든 이전 버전의 데이터 마이그레이션을 증명하지 않습니다.
 
@@ -62,18 +64,18 @@ node scripts/check-release.mjs --public
 
 | 파일 | 내용 |
 | --- | --- |
-| `Mosaic-0.7.4-win-x64/` | 앱, 런타임, 사용자 문서와 고지 전체 |
-| `Mosaic-0.7.4-win-x64-setup.exe` | 현재 사용자용 설치 파일 |
-| `Mosaic-0.7.4-win-x64-portable.zip` | 전체 실행 폴더의 압축판 |
-| `Mosaic-0.7.4-win-x64-artifacts.json` | 설치판·압축판의 크기와 SHA-256 |
-| `Mosaic-0.7.4-win-x64-SHA256SUMS.txt` | 설치판·압축판 해시 |
-| `Mosaic-0.7.4-source.zip` | 허용 목록을 통과한 소스·테스트·잠금 파일·문서 |
-| `Mosaic-0.7.4-source-manifest.json` | 소스 파일별 크기와 SHA-256; ZIP 안에도 같은 `SOURCE-MANIFEST.json` 포함 |
-| `Mosaic-0.7.4-source-SHA256SUMS.txt` | 소스 ZIP과 소스 매니페스트 해시 |
+| `Mosaic-0.7.5-win-x64/` | 앱, 런타임, 사용자 문서와 고지 전체 |
+| `Mosaic-0.7.5-win-x64-setup.exe` | 현재 사용자용 설치 파일 |
+| `Mosaic-0.7.5-win-x64-portable.zip` | 전체 실행 폴더의 압축판 |
+| `Mosaic-0.7.5-win-x64-artifacts.json` | 설치판·압축판의 크기와 SHA-256 |
+| `Mosaic-0.7.5-win-x64-SHA256SUMS.txt` | 설치판·압축판 해시 |
+| `Mosaic-0.7.5-source.zip` | 허용 목록을 통과한 소스·테스트·잠금 파일·문서 |
+| `Mosaic-0.7.5-source-manifest.json` | 소스 파일별 크기와 SHA-256; ZIP 안에도 같은 `SOURCE-MANIFEST.json` 포함 |
+| `Mosaic-0.7.5-source-SHA256SUMS.txt` | 소스 ZIP과 소스 매니페스트 해시 |
 | `publication-audit.json` | 검사한 파일 목록과 값을 숨긴 발견 사항 |
 | `release-check-draft.json`, `release-check-public.json` | 검사 범위, 파일 오류와 공개 차단 항목 |
 
-설치 검사와 서명 도구는 별도 결과 JSON을 남깁니다. `BUILD-INFO.json`의 패키징 성공이나 `signed` 플래그만으로 실행 검증·서명 검증을 주장하지 않습니다. 공개 검사는 Windows에서 실제 EXE·DLL·NODE와 설치 파일의 Authenticode, 타임스탬프, 설정된 배포자와 인증서 이름 일치를 다시 확인합니다.
+설치 검사와 서명 도구는 별도 결과 JSON을 남깁니다. `BUILD-INFO.json`의 패키징 성공이나 저장된 `signed` 플래그만으로 실행 검증·서명 검증을 주장하지 않습니다. 공개 검사는 Windows에서 실제 EXE·DLL·NODE와 설치 파일의 Authenticode를 읽고 위 정책을 적용합니다.
 
 `npm run build`는 Vite 성공 후 `audit-publication.mjs --stamp-build`로 `dist/BUILD-SOURCE.json`에 UI 소스·공유 코드·설정·잠금 파일과 빌드 출력의 해시를 기록합니다. 릴리스 검사는 이 입력이 현재 소스와 같고 출력이 패키지 안의 파일과 같은지 확인합니다. 런타임 소스와 배포 문서도 패키지의 바이트와 직접 비교합니다. 이 기록은 정해진 빌드 명령을 순서대로 실행했다는 전제의 오래된 빌드 탐지 수단이며, 컴파일러나 빌드 환경에 대한 암호학적 증명은 아닙니다.
 
@@ -88,6 +90,8 @@ node scripts/check-release.mjs --public
 ZIP에는 검사 시 읽은 바이트만 넣습니다. 파일 순서·타임스탬프를 고정하여 같은 소스는 같은 ZIP을 만들고 CRC와 SHA-256으로 확인합니다. 내보낸 뒤 소스를 변경하면 릴리스 검사에서 `source-stale`로 실패하므로 마지막 수정 후 다시 내보내세요. 다른 도구로 전체 작업 폴더를 통째로 압축하지 마세요.
 
 ## 서명과 공개 전 마무리
+
+현재 미서명 베타에는 유료 인증서가 필요하지 않습니다. 아래 절차는 이후 서명 배포로 전환할 때 사용합니다.
 
 승인된 코드 서명 인증서를 준비한 뒤 `scripts/sign-win.mjs`의 사전 점검으로 실제 서명 대상과 도구를 확인하세요. 인증서 개인키를 소스나 CI 로그에 넣지 않습니다. 서명은 앱 파일의 해시를 바꾸므로 서명 후 매니페스트·설치 파일·압축판·체크섬을 재생성하고 최종 설치 파일도 서명·검증해야 합니다. 서명 도구가 제공하는 순서와 결과를 확인하고 마지막 공개 검사를 다시 실행하세요.
 
